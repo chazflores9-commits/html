@@ -10,7 +10,7 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Inter', sans-serif;
             background: transparent;
@@ -24,11 +24,6 @@
             position: relative;
             width: 371px;
             height: 428px;
-            display: block;
-        }
-
-        .menu-container.visible {
-            display: block;
         }
 
         /* Header Image */
@@ -80,596 +75,224 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
-            font-weight: 700;
-            color: #ffffff;
-            transition: left 0.3s ease;
-        }
-
-        .main-menu-button.toggles {
-            left: 6px;
-        }
-
-        .main-menu-button.players {
-            left: 130px;
-        }
-
-        .main-menu-button.server {
-            left: 258px;
         }
 
         .main-menu-text {
-            position: absolute;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            top: 13px;
-            width: 100%;
-            font-size: 10px;
-            font-weight: 700;
-            color: #ffffff;
-            opacity: 0.7;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 12px;
+            white-space: nowrap;
+            line-height: normal;
         }
 
-        .main-menu-text span {
-            width: 98px;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        /* Menu Body */
-        .menu-body {
+        /* Menu List Background */
+        .menu-list-wrapper {
             position: absolute;
             left: 0;
-            top: 133px;
+            top: 138px;
             width: 371px;
-            height: 295px;
+        }
+
+        .menu-list-header {
+            position: relative;
+            width: 371px;
+            height: 30px;
             background: #000000;
             border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .menu-content {
-            padding: 10px;
-            color: #ffffff;
-        }
-
-        .toggle-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 8px 10px;
-            margin-bottom: 4px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 4px;
+            justify-content: flex-end;
+            padding-right: 7px;
+        }
+
+        .page-indicator {
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
             font-size: 12px;
-            transition: background 0.2s;
+            white-space: nowrap;
         }
 
-        .toggle-item.selected {
-            background: rgba(34, 130, 245, 0.3);
-            border-left: 3px solid #2282f5;
+        .menu-list-content {
+            width: 371px;
+            background: rgba(217, 217, 217, 0);
+            border-radius: 0 0 6px 6px;
+            padding-top: 5px;
         }
 
-        .toggle-switch {
-            width: 40px;
-            height: 20px;
-            background: #333;
-            border-radius: 10px;
+        .menu-list-top-border {
+            width: 371px;
+            height: 5px;
+            background: #000000;
+        }
+
+        /* Menu Items */
+        .menu-items {
+            width: 371px;
+        }
+
+        .menu-item {
             position: relative;
-            transition: background 0.3s;
-        }
-
-        .toggle-switch.active {
-            background: #2282f5;
-        }
-
-        .toggle-switch::after {
-            content: '';
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            background: white;
-            border-radius: 50%;
-            top: 2px;
-            left: 2px;
-            transition: left 0.3s;
-        }
-
-        .toggle-switch.active::after {
-            left: 22px;
-        }
-
-        /* Player List */
-        .player-item {
+            width: 371px;
+            height: 32px;
+            background: rgba(0, 0, 2, 0.5);
+            margin-bottom: 0;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 8px 10px;
-            margin-bottom: 4px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 4px;
-            font-size: 12px;
-        }
-
-        .player-item.selected {
-            background: rgba(34, 130, 245, 0.3);
-            border-left: 3px solid #2282f5;
-        }
-
-        .player-name {
-            flex: 1;
-        }
-
-        .player-id {
-            color: #2282f5;
-            font-weight: 600;
-        }
-
-        /* Server Options */
-        .server-options {
-            display: flex;
-            gap: 10px;
-            height: 100%;
-        }
-
-        .server-column {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .server-item {
-            padding: 8px 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 4px;
-            font-size: 11px;
-            text-align: center;
+            padding-left: 7px;
             cursor: pointer;
             transition: background 0.2s;
         }
 
-        .server-item.selected {
-            background: rgba(34, 130, 245, 0.3);
-            border-left: 3px solid #2282f5;
+        .menu-item:hover {
+            background: rgba(46, 120, 210, 0.4);
         }
 
-        .server-item.active {
-            background: rgba(34, 245, 130, 0.3);
+        .menu-item-selected {
+            background: rgba(46, 120, 210, 0.56);
+            border: 1px solid #207be8;
         }
 
-        /* Scrollable content */
-        .scrollable {
-            max-height: 275px;
-            overflow-y: auto;
+        .menu-item-text {
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 12px;
+            line-height: 15px;
+            margin: 0;
         }
 
-        .scrollable::-webkit-scrollbar {
-            width: 6px;
+        .menu-arrow {
+            position: absolute;
+            right: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 15px;
         }
 
-        .scrollable::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 3px;
+        /* Footer */
+        .menu-footer {
+            position: absolute;
+            left: 0;
+            top: 392px;
+            width: 371px;
+            height: 36px;
+            background: #000000;
+            border-radius: 0 0 6px 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7px;
         }
 
-        .scrollable::-webkit-scrollbar-thumb {
-            background: #2282f5;
-            border-radius: 3px;
+        .footer-version {
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 12px;
+            margin: 0;
+        }
+
+        .footer-name {
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 12px;
+            margin: 0;
         }
     </style>
 </head>
 <body>
-    <div class="menu-container" id="menuContainer">
-        <!-- Header -->
+    <div class="menu-container">
+        <!-- Header Image with Cat -->
         <div class="menu-header">
-            <img src="https://i.imgur.com/placeholder.jpg" alt="Menu Header">
+            <img src="https://images.unsplash.com/photo-1647806422508-0322f33e270b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYXQlMjBwb3J0cmFpdHxlbnwxfHx8fDE3NjEzMDQzNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="Menu Header">
         </div>
 
-        <!-- Main Menu Navigation -->
+        <!-- Main Menu Tab -->
         <div class="main-menu-wrapper">
             <div class="main-menu-bg"></div>
-            <div class="main-menu-button toggles" id="menuButton"></div>
-            <div class="main-menu-text">
-                <span>TOGGLES</span>
-                <span>PLAYERS</span>
-                <span>SERVER</span>
+            <div class="main-menu-button">
+                <p class="main-menu-text">Main Menu</p>
             </div>
         </div>
 
-        <!-- Menu Body -->
-        <div class="menu-body">
-            <div class="menu-content scrollable" id="menuContent">
-                <!-- Content will be dynamically populated -->
+        <!-- Menu List Container -->
+        <div class="menu-list-wrapper">
+            <div class="menu-list-header">
+                <p class="page-indicator">1/7</p>
             </div>
+            <div class="menu-list-content">
+                <div class="menu-list-top-border"></div>
+                
+                <!-- Menu Items -->
+                <div class="menu-items">
+                    <!-- Self (Selected) -->
+                    <div class="menu-item menu-item-selected">
+                        <p class="menu-item-text">Self</p>
+                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
+                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
+                        </svg>
+                    </div>
+
+                    <!-- Online -->
+                    <div class="menu-item">
+                        <p class="menu-item-text">Online</p>
+                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
+                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
+                        </svg>
+                    </div>
+
+                    <!-- Weapon -->
+                    <div class="menu-item">
+                        <p class="menu-item-text">Weapon</p>
+                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
+                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
+                        </svg>
+                    </div>
+
+                    <!-- Vehicle -->
+                    <div class="menu-item">
+                        <p class="menu-item-text">Vehicle</p>
+                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
+                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
+                        </svg>
+                    </div>
+
+                    <!-- Teleportation -->
+                    <div class="menu-item">
+                        <p class="menu-item-text">Teleportation</p>
+                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
+                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
+                        </svg>
+                    </div>
+
+                    <!-- Miscellaneous -->
+                    <div class="menu-item">
+                        <p class="menu-item-text">Miscellaneous</p>
+                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
+                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
+                        </svg>
+                    </div>
+
+                    <!-- Settings -->
+                    <div class="menu-item">
+                        <p class="menu-item-text">Settings</p>
+                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
+                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="menu-footer">
+            <p class="footer-version">Beta - 1.00</p>
+            <p class="footer-name">Name</p>
         </div>
     </div>
-
-    <script>
-        // Menu state
-        const menuState = {
-            visible: true,
-            section: 'toggles',
-            selectedIndex: 0,
-            toggleStates: {},
-            serverToggleStates: {},
-            playerList: [],
-            serverOptions: []
-        };
-
-        // DOM elements
-        const menuContainer = document.getElementById('menuContainer');
-        const menuButton = document.getElementById('menuButton');
-        const menuContent = document.getElementById('menuContent');
-
-        // Listen for messages from Lua
-        window.addEventListener('message', (event) => {
-            const data = event.data;
-            
-            if (!data || !data.action) return;
-
-            console.log('Received message:', data);
-
-            switch (data.action) {
-                case 'KEY_PRESSED':
-                    handleKeyPress(data.data.key);
-                    break;
-                case 'SET_OSINT_VISIBLE':
-                    setMenuVisibility(data.data.bool);
-                    break;
-
-                case 'GO_BACK_TO_MAIN':
-                    switchSection('toggles');
-                    break;
-
-                case 'SET_SELECTED_INDEX':
-                    setSelectedIndex(data.data.index);
-                    break;
-
-                case 'UPDATE_TOGGLE_STATE':
-                    updateToggleState(data.data.toggleName, data.data.isToggled);
-                    break;
-
-                case 'UPDATE_SERVER_TOGGLE_INDEX':
-                    updateServerToggle(data.data.toggleName, data.data.isToggled);
-                    break;
-
-                case 'SET_PLAYER_SELECTED':
-                    setPlayerSelected(data.data.index, data.data.serverId);
-                    break;
-
-                case 'SET_SERVER_TOGGLE_SELECTED':
-                    setServerSelected(data.data.index);
-                    break;
-
-                case 'UPDATE_PLAYER_LIST':
-                    updatePlayerList(data.data.players);
-                    break;
-
-                case 'SWITCH_SECTION':
-                    switchSection(data.data.section);
-                    break;
-
-                case 'SET_SERVER_OPTIONS_FOCUS':
-                    updateServerFocus(data.data.side, data.data.index);
-                    break;
-
-                case 'UPDATE_SERVER_LEFT_MODEL':
-                    updateServerLeftModel(data.data.label, data.data.model);
-                    break;
-
-                case 'UPDATE_SERVER_RIGHT_TOGGLE':
-                    updateServerRightToggle(data.data.label, data.data.isToggled);
-                    break;
-
-                case 'SET_VEHICLE_OPTIONS_FOCUS':
-                    updateVehicleFocus(data.data.side, data.data.index);
-                    break;
-
-                case 'UPDATE_VEHICLE_RIGHT_TOGGLE':
-                    updateVehicleRightToggle(data.data.label, data.data.isToggled);
-                    break;
-
-                case 'SET_EXPLOITS_FOCUS':
-                    updateExploitsFocus(data.data);
-                    break;
-
-                case 'UPDATE_EXPLOITS_INPUT':
-                    updateExploitsInput(data.data);
-                    break;
-            }
-        });
-
-        // Set menu visibility
-        function setMenuVisibility(visible) {
-            menuState.visible = visible;
-            if (visible) {
-                menuContainer.classList.add('visible');
-            } else {
-                menuContainer.classList.remove('visible');
-            }
-        }
-
-        // Switch between sections
-        function switchSection(section) {
-            menuState.section = section;
-            menuState.selectedIndex = 0;
-            
-            // Update button position
-            menuButton.className = `main-menu-button ${section}`;
-            
-            // Render content
-            renderContent();
-        }
-
-        // Set selected index
-        function setSelectedIndex(index) {
-            menuState.selectedIndex = index;
-            renderContent();
-        }
-
-        // Update toggle state
-        function updateToggleState(toggleName, isToggled) {
-            menuState.toggleStates[toggleName] = isToggled;
-            renderContent();
-        }
-
-        // Update server toggle
-        function updateServerToggle(toggleName, isToggled) {
-            menuState.serverToggleStates[toggleName] = isToggled;
-            renderContent();
-        }
-
-        // Set player selected
-        function setPlayerSelected(index, serverId) {
-            menuState.selectedIndex = index;
-            renderContent();
-        }
-
-        // Set server selected
-        function setServerSelected(index) {
-            menuState.selectedIndex = index;
-            renderContent();
-        }
-
-        // Update player list
-        function updatePlayerList(players) {
-            menuState.playerList = players || [];
-            if (menuState.section === 'players') {
-                renderContent();
-            }
-        }
-
-        // Update server focus
-        function updateServerFocus(side, index) {
-            // Handle server options focus
-            renderContent();
-        }
-
-        // Update server left model
-        function updateServerLeftModel(label, model) {
-            // Handle model updates
-            renderContent();
-        }
-
-        // Update server right toggle
-        function updateServerRightToggle(label, isToggled) {
-            menuState.serverToggleStates[label] = isToggled;
-            renderContent();
-        }
-
-        // Update vehicle focus
-        function updateVehicleFocus(side, index) {
-            renderContent();
-        }
-
-        // Update vehicle right toggle
-        function updateVehicleRightToggle(label, isToggled) {
-            menuState.serverToggleStates[label] = isToggled;
-            renderContent();
-        }
-
-        // Update exploits focus
-        function updateExploitsFocus(data) {
-            renderContent();
-        }
-
-        // Update exploits input
-        function updateExploitsInput(data) {
-            renderContent();
-        }
-
-        // Render content based on current section
-        function renderContent() {
-            if (menuState.section === 'toggles') {
-                renderToggles();
-            } else if (menuState.section === 'players') {
-                renderPlayers();
-            } else if (menuState.section === 'server') {
-                renderServer();
-            }
-        }
-
-        // Render toggles section
-        function renderToggles() {
-            const toggles = [
-                'Revive', 'Unfreeze', 'Noclip', 'Fast Run', 
-                'Skeleton', 'Freecam', 'Godmode', 'Player IDs',
-                'No Ragdoll', 'SuperJump', 'Max Stamina', 'Invisibility'
-            ];
-
-            let html = '';
-            toggles.forEach((toggle, index) => {
-                const isActive = menuState.toggleStates[toggle] || false;
-                const isSelected = index === menuState.selectedIndex;
-                
-                html += `
-                    <div class="toggle-item ${isSelected ? 'selected' : ''}">
-                        <span>${toggle}</span>
-                        <div class="toggle-switch ${isActive ? 'active' : ''}"></div>
-                    </div>
-                `;
-            });
-
-            menuContent.innerHTML = html;
-        }
-
-        // Render players section
-        function renderPlayers() {
-            let html = '';
-            
-            if (menuState.playerList.length === 0) {
-                html = '<div class="player-item">No players found</div>';
-            } else {
-                menuState.playerList.forEach((player, index) => {
-                    const isSelected = index === menuState.selectedIndex;
-                    html += `
-                        <div class="player-item ${isSelected ? 'selected' : ''}">
-                            <span class="player-name">${player.name || 'Unknown'}</span>
-                            <span class="player-id">[${player.source || player.serverId || 'N/A'}]</span>
-                        </div>
-                    `;
-                });
-            }
-
-            menuContent.innerHTML = html;
-        }
-
-        // Render server section
-        function renderServer() {
-            const serverToggles = [
-                'Kill Every1', 'Explode All Cars', 'EarRape Every1',
-                'Tug Spammer', 'Trash Spammer', 'Freecam'
-            ];
-
-            let html = '';
-            serverToggles.forEach((toggle, index) => {
-                const isActive = menuState.serverToggleStates[toggle] || false;
-                const isSelected = index === menuState.selectedIndex;
-                
-                html += `
-                    <div class="toggle-item ${isSelected ? 'selected' : ''}">
-                        <span>${toggle}</span>
-                        <div class="toggle-switch ${isActive ? 'active' : ''}"></div>
-                    </div>
-                `;
-            });
-
-            menuContent.innerHTML = html;
-        }
-
-        // Handle key presses
-        function handleKeyPress(key) {
-            console.log('Key pressed:', key);
-            
-            if (!menuState.visible) return;
-
-            switch (key) {
-                case 'UP':
-                    navigateUp();
-                    break;
-                case 'DOWN':
-                    navigateDown();
-                    break;
-                case 'LEFT':
-                    switchSectionLeft();
-                    break;
-                case 'RIGHT':
-                    switchSectionRight();
-                    break;
-                case 'ENTER':
-                    selectCurrent();
-                    break;
-                case 'ESCAPE':
-                case 'BACK':
-                    goBack();
-                    break;
-            }
-        }
-
-        // Navigation functions
-        function navigateUp() {
-            if (menuState.selectedIndex > 0) {
-                menuState.selectedIndex--;
-                renderContent();
-            }
-        }
-
-        function navigateDown() {
-            const maxIndex = getMaxIndex();
-            if (menuState.selectedIndex < maxIndex) {
-                menuState.selectedIndex++;
-                renderContent();
-            }
-        }
-
-        function switchSectionLeft() {
-            const sections = ['toggles', 'players', 'server'];
-            const currentIdx = sections.indexOf(menuState.section);
-            if (currentIdx > 0) {
-                switchSection(sections[currentIdx - 1]);
-            }
-        }
-
-        function switchSectionRight() {
-            const sections = ['toggles', 'players', 'server'];
-            const currentIdx = sections.indexOf(menuState.section);
-            if (currentIdx < sections.length - 1) {
-                switchSection(sections[currentIdx + 1]);
-            }
-        }
-
-        function selectCurrent() {
-            if (menuState.section === 'toggles') {
-                const toggles = [
-                    'Revive', 'Unfreeze', 'Noclip', 'Fast Run', 
-                    'Skeleton', 'Freecam', 'Godmode', 'Player IDs',
-                    'No Ragdoll', 'SuperJump', 'Max Stamina', 'Invisibility'
-                ];
-                const toggleName = toggles[menuState.selectedIndex];
-                if (toggleName) {
-                    menuState.toggleStates[toggleName] = !menuState.toggleStates[toggleName];
-                    renderContent();
-                }
-            } else if (menuState.section === 'players') {
-                // Handle player selection
-                const player = menuState.playerList[menuState.selectedIndex];
-                if (player) {
-                    console.log('Selected player:', player);
-                }
-            } else if (menuState.section === 'server') {
-                const serverToggles = [
-                    'Kill Every1', 'Explode All Cars', 'EarRape Every1',
-                    'Tug Spammer', 'Trash Spammer', 'Freecam'
-                ];
-                const toggleName = serverToggles[menuState.selectedIndex];
-                if (toggleName) {
-                    menuState.serverToggleStates[toggleName] = !menuState.serverToggleStates[toggleName];
-                    renderContent();
-                }
-            }
-        }
-
-        function goBack() {
-            // Handle back navigation
-            switchSection('toggles');
-            menuState.selectedIndex = 0;
-        }
-
-        function getMaxIndex() {
-            if (menuState.section === 'toggles') {
-                return 11; // 12 toggles (0-11)
-            } else if (menuState.section === 'players') {
-                return Math.max(0, menuState.playerList.length - 1);
-            } else if (menuState.section === 'server') {
-                return 5; // 6 server toggles (0-5)
-            }
-            return 0;
-        }
-
-        // Initialize
-        renderContent();
-    </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9941880bcbb00ceb',t:'MTc2MTM5MzM5NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
