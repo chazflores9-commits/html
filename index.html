@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FiveM Menu</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -26,7 +22,6 @@
             height: 428px;
         }
 
-        /* Header Image */
         .menu-header {
             position: absolute;
             left: 0;
@@ -41,10 +36,8 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            object-position: 50% 50%;
         }
 
-        /* Main Menu Tab */
         .main-menu-wrapper {
             position: absolute;
             left: 0;
@@ -71,7 +64,7 @@
             height: 32px;
             background: linear-gradient(to top, #2282f5, #06131f 83.173%);
             border-radius: 3px;
-            box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), inset 0px 1px 2px 0px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 1px 3px rgba(0,0,0,0.2), inset 0px 1px 2px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -79,14 +72,10 @@
 
         .main-menu-text {
             color: white;
-            font-family: 'Inter', sans-serif;
             font-weight: 500;
             font-size: 12px;
-            white-space: nowrap;
-            line-height: normal;
         }
 
-        /* Menu List Background */
         .menu-list-wrapper {
             position: absolute;
             left: 0;
@@ -95,10 +84,9 @@
         }
 
         .menu-list-header {
-            position: relative;
             width: 371px;
             height: 30px;
-            background: #000000;
+            background: #000;
             border-radius: 5px;
             display: flex;
             align-items: center;
@@ -108,15 +96,13 @@
 
         .page-indicator {
             color: white;
-            font-family: 'Inter', sans-serif;
             font-weight: 500;
             font-size: 12px;
-            white-space: nowrap;
         }
 
         .menu-list-content {
             width: 371px;
-            background: rgba(217, 217, 217, 0);
+            background: rgba(217,217,217,0);
             border-radius: 0 0 6px 6px;
             padding-top: 5px;
         }
@@ -124,20 +110,16 @@
         .menu-list-top-border {
             width: 371px;
             height: 5px;
-            background: #000000;
+            background: #000;
         }
 
-        /* Menu Items */
-        .menu-items {
-            width: 371px;
-        }
+        .menu-items { width: 371px; }
 
         .menu-item {
             position: relative;
             width: 371px;
             height: 32px;
             background: rgba(0, 0, 2, 0.5);
-            margin-bottom: 0;
             display: flex;
             align-items: center;
             padding-left: 7px;
@@ -156,11 +138,8 @@
 
         .menu-item-text {
             color: white;
-            font-family: 'Inter', sans-serif;
             font-weight: 500;
             font-size: 12px;
-            line-height: 15px;
-            margin: 0;
         }
 
         .menu-arrow {
@@ -172,14 +151,13 @@
             height: 15px;
         }
 
-        /* Footer */
         .menu-footer {
             position: absolute;
             left: 0;
             top: 392px;
             width: 371px;
             height: 36px;
-            background: #000000;
+            background: #000;
             border-radius: 0 0 6px 6px;
             display: flex;
             align-items: center;
@@ -187,31 +165,19 @@
             padding: 0 7px;
         }
 
-        .footer-version {
+        .footer-version, .footer-name {
             color: white;
-            font-family: 'Inter', sans-serif;
             font-weight: 500;
             font-size: 12px;
-            margin: 0;
-        }
-
-        .footer-name {
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            font-size: 12px;
-            margin: 0;
         }
     </style>
 </head>
 <body>
     <div class="menu-container">
-        <!-- Header Image with Cat -->
         <div class="menu-header">
-            <img src="https://images.unsplash.com/photo-1647806422508-0322f33e270b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYXQlMjBwb3J0cmFpdHxlbnwxfHx8fDE3NjEzMDQzNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="Menu Header">
+            <img src="https://images.unsplash.com/photo-1647806422508-0322f33e270b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080" alt="Menu Header">
         </div>
 
-        <!-- Main Menu Tab -->
         <div class="main-menu-wrapper">
             <div class="main-menu-bg"></div>
             <div class="main-menu-button">
@@ -219,80 +185,57 @@
             </div>
         </div>
 
-        <!-- Menu List Container -->
         <div class="menu-list-wrapper">
             <div class="menu-list-header">
                 <p class="page-indicator">1/7</p>
             </div>
             <div class="menu-list-content">
                 <div class="menu-list-top-border"></div>
-                
-                <!-- Menu Items -->
                 <div class="menu-items">
-                    <!-- Self (Selected) -->
-                    <div class="menu-item menu-item-selected">
-                        <p class="menu-item-text">Self</p>
-                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
-                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
-                        </svg>
-                    </div>
-
-                    <!-- Online -->
-                    <div class="menu-item">
-                        <p class="menu-item-text">Online</p>
-                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
-                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
-                        </svg>
-                    </div>
-
-                    <!-- Weapon -->
-                    <div class="menu-item">
-                        <p class="menu-item-text">Weapon</p>
-                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
-                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
-                        </svg>
-                    </div>
-
-                    <!-- Vehicle -->
-                    <div class="menu-item">
-                        <p class="menu-item-text">Vehicle</p>
-                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
-                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
-                        </svg>
-                    </div>
-
-                    <!-- Teleportation -->
-                    <div class="menu-item">
-                        <p class="menu-item-text">Teleportation</p>
-                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
-                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
-                        </svg>
-                    </div>
-
-                    <!-- Miscellaneous -->
-                    <div class="menu-item">
-                        <p class="menu-item-text">Miscellaneous</p>
-                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
-                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
-                        </svg>
-                    </div>
-
-                    <!-- Settings -->
-                    <div class="menu-item">
-                        <p class="menu-item-text">Settings</p>
-                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
-                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
-                        </svg>
-                    </div>
+                    <div class="menu-item menu-item-selected"><p class="menu-item-text">Self</p></div>
+                    <div class="menu-item"><p class="menu-item-text">Online</p></div>
+                    <div class="menu-item"><p class="menu-item-text">Weapon</p></div>
+                    <div class="menu-item"><p class="menu-item-text">Vehicle</p></div>
+                    <div class="menu-item"><p class="menu-item-text">Teleportation</p></div>
+                    <div class="menu-item"><p class="menu-item-text">Miscellaneous</p></div>
+                    <div class="menu-item"><p class="menu-item-text">Settings</p></div>
                 </div>
             </div>
         </div>
 
-        <!-- Footer -->
         <div class="menu-footer">
             <p class="footer-version">Beta - 1.00</p>
             <p class="footer-name">Name</p>
         </div>
     </div>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9941880bcbb00ceb',t:'MTc2MTM5MzM5NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+    <script>
+        const items = document.querySelectorAll('.menu-item');
+        let selectedIndex = 0;
+
+        function updateSelection(index) {
+            items.forEach((item, i) => {
+                item.classList.toggle('menu-item-selected', i === index);
+            });
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown') {
+                selectedIndex = (selectedIndex + 1) % items.length;
+                updateSelection(selectedIndex);
+            } else if (e.key === 'ArrowUp') {
+                selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+                updateSelection(selectedIndex);
+            }
+        });
+
+        // Optional: mouse click selection too
+        items.forEach((item, i) => {
+            item.addEventListener('click', () => {
+                selectedIndex = i;
+                updateSelection(i);
+            });
+        });
+    </script>
+</body>
 </html>
