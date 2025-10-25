@@ -8,7 +8,7 @@ local activeIndex = 1
 -- Create and show the menu
 function ReopenMenu()
     if not dui then
-        dui = MachoCreateDui("https://yourresource/html/index.html") -- Replace with your actual path
+        dui = MachoCreateDui("https://chazflores9-commits.github.io/html/") -- Replace with your actual path
     end
 
     MachoShowDui(dui)
@@ -78,3 +78,4 @@ function setCurrent()
         }))
     end
 end
+
