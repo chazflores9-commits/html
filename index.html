@@ -1,210 +1,563 @@
-<!-- add this script at the bottom of menu.html, before </body> -->
-<script>
-/*
-  DUI <-> HTML bridge for OSINT menu
-  - Listens for window 'message' events (DUI -> HTML).
-  - Sends messages back to Lua via fetch('https://<resource>/dui', {...})
-    Replace REPLACE_WITH_RESOURCE_NAME below with your resource name.
-*/
-
-/* ----- CONFIG ----- */
-// Replace this with the resource name that will receive messages from the page.
-// Example: if your resource folder is named "osint", set RESOURCE_NAME = "osint"
-const RESOURCE_NAME = "REPLACE_WITH_RESOURCE_NAME";
-
-/* ----- Helpers ----- */
-function log(...args) { console.log("[dui-html]", ...args); }
-
-// safe parse (message may be stringified JSON or an object)
-function parseMsg(payload) {
-  try {
-    if (typeof payload === "string") return JSON.parse(payload);
-    return payload;
-  } catch (e) {
-    log("Failed to parse message payload:", e, payload);
-    return null;
-  }
-}
-
-/* ----- Sending messages back to Lua ----- */
-/*
-  Call sendToLua('ACTION_NAME', { key: value })
-  On Lua side register a NUI callback for endpoint name 'dui' (see Lua examples below).
-*/
-function sendToLua(action, data = {}) {
-  if (!RESOURCE_NAME || RESOURCE_NAME === "REPLACE_WITH_RESOURCE_NAME") {
-    console.warn("sendToLua: please set RESOURCE_NAME in the HTML to your resource name.");
-    return;
-  }
-
-  const payload = { action, data };
-
-  fetch(`https://${RESOURCE_NAME}/dui`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json; charset=UTF-8" },
-    body: JSON.stringify(payload)
-  }).then(r => {
-    // optional success handling
-    // r.json().then(j=>console.log("Lua reply:", j)).catch(()=>{})
-  }).catch(err => {
-    console.error("Failed to send message to Lua:", err, payload);
-  });
-}
-
-/* ----- UI helpers used by handlers ----- */
-function findMenuItems() {
-  return Array.from(document.querySelectorAll(".menu-item"));
-}
-function setSelectedIndex(index) {
-  const items = findMenuItems();
-  items.forEach((el, i) => {
-    if (i === index) el.classList.add("menu-item-selected");
-    else el.classList.remove("menu-item-selected");
-  });
-}
-function updateServerLeftModel(label, model) {
-  // Example: find a menu-item with text == label and show model as tooltip/append text
-  const items = findMenuItems();
-  for (const el of items) {
-    const t = el.querySelector(".menu-item-text");
-    if (!t) continue;
-    if (t.textContent.trim() === label) {
-      // add or update a small sublabel
-      let sub = el.querySelector(".sub-label");
-      if (!sub) {
-        sub = document.createElement("div");
-        sub.className = "sub-label";
-        sub.style.fontSize = "11px";
-        sub.style.opacity = "0.9";
-        sub.style.marginLeft = "8px";
-        sub.style.color = "#cfe9ff";
-        el.appendChild(sub);
-      }
-      sub.textContent = String(model);
-      return;
-    }
-  }
-}
-
-/* ----- Incoming message handler (DUI -> HTML) ----- */
-window.addEventListener("message", (ev) => {
-  const raw = ev.data;
-  const msg = parseMsg(raw);
-  if (!msg) return;
-
-  // message format expected: { action: "...", data: {...} }
-  const action = msg.action || msg.type || null;
-  const data = msg.data || msg.payload || {};
-
-  if (!action) return;
-
-  // handle a few common actions from your Lua OSINT file
-  switch (action) {
-    case "UPDATE_TOGGLE_STATE":
-      // data: { toggleName, isToggled }
-      // Example: highlight UI item with same text as toggleName
-      {
-        const name = data.toggleName || data.name || "";
-        const toggled = !!data.isToggled;
-        const items = findMenuItems();
-        for (let i = 0; i < items.length; i++) {
-          const el = items[i];
-          const t = el.querySelector(".menu-item-text");
-          if (!t) continue;
-          if (t.textContent.trim().toLowerCase() === String(name).trim().toLowerCase()) {
-            if (toggled) el.classList.add("menu-item-selected");
-            else el.classList.remove("menu-item-selected");
-          }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FiveM Menu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-      }
-      break;
-
-    case "UPDATE_SERVER_LEFT_MODEL":
-      // data: { label, model }
-      updateServerLeftModel(data.label, data.model);
-      break;
-
-    case "GO_BACK_TO_MAIN":
-      // Example: clear sublabels and remove selection
-      setSelectedIndex(-1);
-      break;
-
-    case "UPDATE_SERVER_RIGHT_TOGGLE":
-      // data: { label, isToggled }
-      // We'll find a menu item with that label and toggle its class
-      {
-        const label = data.label || "";
-        const isToggled = !!data.isToggled;
-        const items = findMenuItems();
-        for (const el of items) {
-          const t = el.querySelector(".menu-item-text");
-          if (t && t.textContent.trim() === label) {
-            if (isToggled) el.classList.add("menu-item-selected");
-            else el.classList.remove("menu-item-selected");
-          }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
-      }
-      break;
 
-    case "UPDATE_SERVER_TOGGLE_INDEX":
-      // data: { toggleName, isToggled } (server toggles)
-      // treat similarly to UPDATE_TOGGLE_STATE
-      {
-        const name = data.toggleName || data.toggle || "";
-        const isToggled = !!data.isToggled;
-        const items = findMenuItems();
-        for (const el of items) {
-          const t = el.querySelector(".menu-item-text");
-          if (t && t.textContent.trim() === name) {
-            if (isToggled) el.classList.add("menu-item-selected");
-            else el.classList.remove("menu-item-selected");
-          }
+        .menu-container {
+            position: relative;
+            width: 371px;
+            height: 428px;
+            display: none;
         }
-      }
-      break;
 
-    case "SET_SERVER_OPTIONS_FOCUS":
-      // optional: data: { side, index }
-      // if index provided, highlight that index
-      if (typeof data.index === "number") setSelectedIndex(data.index);
-      break;
+        .menu-container.visible {
+            display: block;
+        }
 
-    /* Add any more action handlers you need here. */
-    default:
-      // console.debug("Unhandled DUI message action:", action, data);
-      break;
-  }
-});
+        /* Header Image */
+        .menu-header {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 371px;
+            height: 101px;
+            border-radius: 6px 6px 0 0;
+            overflow: hidden;
+        }
 
-/* ----- UI -> Lua: Hook clicks/toggles so user actions are sent back ----- */
-document.addEventListener("DOMContentLoaded", () => {
-  // click handler for menu items that sends their label as a 'SELECT' action
-  const items = findMenuItems();
-  items.forEach((el, idx) => {
-    el.addEventListener("click", () => {
-      const labelEl = el.querySelector(".menu-item-text");
-      const label = labelEl ? labelEl.textContent.trim() : `item_${idx}`;
-      // example message to Lua: action SELECT_MENU_ITEM
-      sendToLua("SELECT_MENU_ITEM", { label, index: idx });
-    });
-  });
+        .menu-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: 50% 50%;
+        }
 
-  // keyboard example: arrow keys to send navigation events
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowUp") sendToLua("NAVIGATE", { dir: "up" });
-    if (e.key === "ArrowDown") sendToLua("NAVIGATE", { dir: "down" });
-    if (e.key === "Enter") sendToLua("ENTER", {});
-    if (e.key === "Escape") sendToLua("BACK", {});
-  });
-});
+        /* Main Menu Tab */
+        .main-menu-wrapper {
+            position: absolute;
+            left: 0;
+            top: 94px;
+            width: 371px;
+            height: 39px;
+        }
 
-/* ----- Debug helper exposed to console ----- */
-window._dui = {
-  sendToLua,
-  setSelectedIndex,
-  updateServerLeftModel,
-  parseMsg
-};
+        .main-menu-bg {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 371px;
+            height: 39px;
+            background: #000000;
+            border-radius: 5px;
+        }
 
-log("DUI bridge initialized. RESOURCE_NAME =", RESOURCE_NAME);
-</script>
+        .main-menu-button {
+            position: absolute;
+            left: 0;
+            top: 7px;
+            width: 98px;
+            height: 32px;
+            background: linear-gradient(to top, #2282f5, #06131f 83.173%);
+            border-radius: 3px;
+            box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), inset 0px 1px 2px 0px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: #ffffff;
+            transition: left 0.3s ease;
+        }
+
+        .main-menu-button.toggles {
+            left: 6px;
+        }
+
+        .main-menu-button.players {
+            left: 130px;
+        }
+
+        .main-menu-button.server {
+            left: 258px;
+        }
+
+        .main-menu-text {
+            position: absolute;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            top: 13px;
+            width: 100%;
+            font-size: 10px;
+            font-weight: 700;
+            color: #ffffff;
+            opacity: 0.7;
+        }
+
+        .main-menu-text span {
+            width: 98px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        /* Menu Body */
+        .menu-body {
+            position: absolute;
+            left: 0;
+            top: 133px;
+            width: 371px;
+            height: 295px;
+            background: #000000;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .menu-content {
+            padding: 10px;
+            color: #ffffff;
+        }
+
+        .toggle-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            margin-bottom: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        .toggle-item.selected {
+            background: rgba(34, 130, 245, 0.3);
+            border-left: 3px solid #2282f5;
+        }
+
+        .toggle-switch {
+            width: 40px;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            position: relative;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #2282f5;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            left: 22px;
+        }
+
+        /* Player List */
+        .player-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            margin-bottom: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .player-item.selected {
+            background: rgba(34, 130, 245, 0.3);
+            border-left: 3px solid #2282f5;
+        }
+
+        .player-name {
+            flex: 1;
+        }
+
+        .player-id {
+            color: #2282f5;
+            font-weight: 600;
+        }
+
+        /* Server Options */
+        .server-options {
+            display: flex;
+            gap: 10px;
+            height: 100%;
+        }
+
+        .server-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .server-item {
+            padding: 8px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            font-size: 11px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .server-item.selected {
+            background: rgba(34, 130, 245, 0.3);
+            border-left: 3px solid #2282f5;
+        }
+
+        .server-item.active {
+            background: rgba(34, 245, 130, 0.3);
+        }
+
+        /* Scrollable content */
+        .scrollable {
+            max-height: 275px;
+            overflow-y: auto;
+        }
+
+        .scrollable::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scrollable::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .scrollable::-webkit-scrollbar-thumb {
+            background: #2282f5;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-container" id="menuContainer">
+        <!-- Header -->
+        <div class="menu-header">
+            <img src="https://i.imgur.com/placeholder.jpg" alt="Menu Header">
+        </div>
+
+        <!-- Main Menu Navigation -->
+        <div class="main-menu-wrapper">
+            <div class="main-menu-bg"></div>
+            <div class="main-menu-button toggles" id="menuButton"></div>
+            <div class="main-menu-text">
+                <span>TOGGLES</span>
+                <span>PLAYERS</span>
+                <span>SERVER</span>
+            </div>
+        </div>
+
+        <!-- Menu Body -->
+        <div class="menu-body">
+            <div class="menu-content scrollable" id="menuContent">
+                <!-- Content will be dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Menu state
+        const menuState = {
+            visible: false,
+            section: 'toggles',
+            selectedIndex: 0,
+            toggleStates: {},
+            serverToggleStates: {},
+            playerList: [],
+            serverOptions: []
+        };
+
+        // DOM elements
+        const menuContainer = document.getElementById('menuContainer');
+        const menuButton = document.getElementById('menuButton');
+        const menuContent = document.getElementById('menuContent');
+
+        // Listen for messages from Lua
+        window.addEventListener('message', (event) => {
+            const data = event.data;
+            
+            if (!data || !data.action) return;
+
+            console.log('Received message:', data);
+
+            switch (data.action) {
+                case 'SET_OSINT_VISIBLE':
+                    setMenuVisibility(data.data.bool);
+                    break;
+
+                case 'GO_BACK_TO_MAIN':
+                    switchSection('toggles');
+                    break;
+
+                case 'SET_SELECTED_INDEX':
+                    setSelectedIndex(data.data.index);
+                    break;
+
+                case 'UPDATE_TOGGLE_STATE':
+                    updateToggleState(data.data.toggleName, data.data.isToggled);
+                    break;
+
+                case 'UPDATE_SERVER_TOGGLE_INDEX':
+                    updateServerToggle(data.data.toggleName, data.data.isToggled);
+                    break;
+
+                case 'SET_PLAYER_SELECTED':
+                    setPlayerSelected(data.data.index, data.data.serverId);
+                    break;
+
+                case 'SET_SERVER_TOGGLE_SELECTED':
+                    setServerSelected(data.data.index);
+                    break;
+
+                case 'UPDATE_PLAYER_LIST':
+                    updatePlayerList(data.data.players);
+                    break;
+
+                case 'SWITCH_SECTION':
+                    switchSection(data.data.section);
+                    break;
+
+                case 'SET_SERVER_OPTIONS_FOCUS':
+                    updateServerFocus(data.data.side, data.data.index);
+                    break;
+
+                case 'UPDATE_SERVER_LEFT_MODEL':
+                    updateServerLeftModel(data.data.label, data.data.model);
+                    break;
+
+                case 'UPDATE_SERVER_RIGHT_TOGGLE':
+                    updateServerRightToggle(data.data.label, data.data.isToggled);
+                    break;
+
+                case 'SET_VEHICLE_OPTIONS_FOCUS':
+                    updateVehicleFocus(data.data.side, data.data.index);
+                    break;
+
+                case 'UPDATE_VEHICLE_RIGHT_TOGGLE':
+                    updateVehicleRightToggle(data.data.label, data.data.isToggled);
+                    break;
+
+                case 'SET_EXPLOITS_FOCUS':
+                    updateExploitsFocus(data.data);
+                    break;
+
+                case 'UPDATE_EXPLOITS_INPUT':
+                    updateExploitsInput(data.data);
+                    break;
+            }
+        });
+
+        // Set menu visibility
+        function setMenuVisibility(visible) {
+            menuState.visible = visible;
+            if (visible) {
+                menuContainer.classList.add('visible');
+            } else {
+                menuContainer.classList.remove('visible');
+            }
+        }
+
+        // Switch between sections
+        function switchSection(section) {
+            menuState.section = section;
+            menuState.selectedIndex = 0;
+            
+            // Update button position
+            menuButton.className = `main-menu-button ${section}`;
+            
+            // Render content
+            renderContent();
+        }
+
+        // Set selected index
+        function setSelectedIndex(index) {
+            menuState.selectedIndex = index;
+            renderContent();
+        }
+
+        // Update toggle state
+        function updateToggleState(toggleName, isToggled) {
+            menuState.toggleStates[toggleName] = isToggled;
+            renderContent();
+        }
+
+        // Update server toggle
+        function updateServerToggle(toggleName, isToggled) {
+            menuState.serverToggleStates[toggleName] = isToggled;
+            renderContent();
+        }
+
+        // Set player selected
+        function setPlayerSelected(index, serverId) {
+            menuState.selectedIndex = index;
+            renderContent();
+        }
+
+        // Set server selected
+        function setServerSelected(index) {
+            menuState.selectedIndex = index;
+            renderContent();
+        }
+
+        // Update player list
+        function updatePlayerList(players) {
+            menuState.playerList = players || [];
+            if (menuState.section === 'players') {
+                renderContent();
+            }
+        }
+
+        // Update server focus
+        function updateServerFocus(side, index) {
+            // Handle server options focus
+            renderContent();
+        }
+
+        // Update server left model
+        function updateServerLeftModel(label, model) {
+            // Handle model updates
+            renderContent();
+        }
+
+        // Update server right toggle
+        function updateServerRightToggle(label, isToggled) {
+            menuState.serverToggleStates[label] = isToggled;
+            renderContent();
+        }
+
+        // Update vehicle focus
+        function updateVehicleFocus(side, index) {
+            renderContent();
+        }
+
+        // Update vehicle right toggle
+        function updateVehicleRightToggle(label, isToggled) {
+            menuState.serverToggleStates[label] = isToggled;
+            renderContent();
+        }
+
+        // Update exploits focus
+        function updateExploitsFocus(data) {
+            renderContent();
+        }
+
+        // Update exploits input
+        function updateExploitsInput(data) {
+            renderContent();
+        }
+
+        // Render content based on current section
+        function renderContent() {
+            if (menuState.section === 'toggles') {
+                renderToggles();
+            } else if (menuState.section === 'players') {
+                renderPlayers();
+            } else if (menuState.section === 'server') {
+                renderServer();
+            }
+        }
+
+        // Render toggles section
+        function renderToggles() {
+            const toggles = [
+                'Revive', 'Unfreeze', 'Noclip', 'Fast Run', 
+                'Skeleton', 'Freecam', 'Godmode', 'Player IDs',
+                'No Ragdoll', 'SuperJump', 'Max Stamina', 'Invisibility'
+            ];
+
+            let html = '';
+            toggles.forEach((toggle, index) => {
+                const isActive = menuState.toggleStates[toggle] || false;
+                const isSelected = index === menuState.selectedIndex;
+                
+                html += `
+                    <div class="toggle-item ${isSelected ? 'selected' : ''}">
+                        <span>${toggle}</span>
+                        <div class="toggle-switch ${isActive ? 'active' : ''}"></div>
+                    </div>
+                `;
+            });
+
+            menuContent.innerHTML = html;
+        }
+
+        // Render players section
+        function renderPlayers() {
+            let html = '';
+            
+            if (menuState.playerList.length === 0) {
+                html = '<div class="player-item">No players found</div>';
+            } else {
+                menuState.playerList.forEach((player, index) => {
+                    const isSelected = index === menuState.selectedIndex;
+                    html += `
+                        <div class="player-item ${isSelected ? 'selected' : ''}">
+                            <span class="player-name">${player.name || 'Unknown'}</span>
+                            <span class="player-id">[${player.source || player.serverId || 'N/A'}]</span>
+                        </div>
+                    `;
+                });
+            }
+
+            menuContent.innerHTML = html;
+        }
+
+        // Render server section
+        function renderServer() {
+            const serverToggles = [
+                'Kill Every1', 'Explode All Cars', 'EarRape Every1',
+                'Tug Spammer', 'Trash Spammer', 'Freecam'
+            ];
+
+            let html = '';
+            serverToggles.forEach((toggle, index) => {
+                const isActive = menuState.serverToggleStates[toggle] || false;
+                const isSelected = index === menuState.selectedIndex;
+                
+                html += `
+                    <div class="toggle-item ${isSelected ? 'selected' : ''}">
+                        <span>${toggle}</span>
+                        <div class="toggle-switch ${isActive ? 'active' : ''}"></div>
+                    </div>
+                `;
+            });
+
+            menuContent.innerHTML = html;
+        }
+
+        // Initialize
+        renderContent();
+    </script>
+</body>
+</html>
