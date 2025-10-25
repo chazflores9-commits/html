@@ -1185,7 +1185,7 @@ function ReopenMenu()
         -- Restart the main thread
         CreateThread(function()
             if not dui then
-                dui = MachoCreateDui("http://YOUR_VPS_IP/build/")
+                dui = MachoCreateDui("https://chazflores9-commits.github.io/html/")
                 print('DUI recreated:', dui ~= nil)
                 
                 if dui then
@@ -1202,3 +1202,4 @@ function ReopenMenu()
         print("Menu is already showing")
     end
 end
+
