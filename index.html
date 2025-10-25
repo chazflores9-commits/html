@@ -1,298 +1,210 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FiveM Menu</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+<!-- add this script at the bottom of menu.html, before </body> -->
+<script>
+/*
+  DUI <-> HTML bridge for OSINT menu
+  - Listens for window 'message' events (DUI -> HTML).
+  - Sends messages back to Lua via fetch('https://<resource>/dui', {...})
+    Replace REPLACE_WITH_RESOURCE_NAME below with your resource name.
+*/
+
+/* ----- CONFIG ----- */
+// Replace this with the resource name that will receive messages from the page.
+// Example: if your resource folder is named "osint", set RESOURCE_NAME = "osint"
+const RESOURCE_NAME = "REPLACE_WITH_RESOURCE_NAME";
+
+/* ----- Helpers ----- */
+function log(...args) { console.log("[dui-html]", ...args); }
+
+// safe parse (message may be stringified JSON or an object)
+function parseMsg(payload) {
+  try {
+    if (typeof payload === "string") return JSON.parse(payload);
+    return payload;
+  } catch (e) {
+    log("Failed to parse message payload:", e, payload);
+    return null;
+  }
+}
+
+/* ----- Sending messages back to Lua ----- */
+/*
+  Call sendToLua('ACTION_NAME', { key: value })
+  On Lua side register a NUI callback for endpoint name 'dui' (see Lua examples below).
+*/
+function sendToLua(action, data = {}) {
+  if (!RESOURCE_NAME || RESOURCE_NAME === "REPLACE_WITH_RESOURCE_NAME") {
+    console.warn("sendToLua: please set RESOURCE_NAME in the HTML to your resource name.");
+    return;
+  }
+
+  const payload = { action, data };
+
+  fetch(`https://${RESOURCE_NAME}/dui`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json; charset=UTF-8" },
+    body: JSON.stringify(payload)
+  }).then(r => {
+    // optional success handling
+    // r.json().then(j=>console.log("Lua reply:", j)).catch(()=>{})
+  }).catch(err => {
+    console.error("Failed to send message to Lua:", err, payload);
+  });
+}
+
+/* ----- UI helpers used by handlers ----- */
+function findMenuItems() {
+  return Array.from(document.querySelectorAll(".menu-item"));
+}
+function setSelectedIndex(index) {
+  const items = findMenuItems();
+  items.forEach((el, i) => {
+    if (i === index) el.classList.add("menu-item-selected");
+    else el.classList.remove("menu-item-selected");
+  });
+}
+function updateServerLeftModel(label, model) {
+  // Example: find a menu-item with text == label and show model as tooltip/append text
+  const items = findMenuItems();
+  for (const el of items) {
+    const t = el.querySelector(".menu-item-text");
+    if (!t) continue;
+    if (t.textContent.trim() === label) {
+      // add or update a small sublabel
+      let sub = el.querySelector(".sub-label");
+      if (!sub) {
+        sub = document.createElement("div");
+        sub.className = "sub-label";
+        sub.style.fontSize = "11px";
+        sub.style.opacity = "0.9";
+        sub.style.marginLeft = "8px";
+        sub.style.color = "#cfe9ff";
+        el.appendChild(sub);
+      }
+      sub.textContent = String(model);
+      return;
+    }
+  }
+}
+
+/* ----- Incoming message handler (DUI -> HTML) ----- */
+window.addEventListener("message", (ev) => {
+  const raw = ev.data;
+  const msg = parseMsg(raw);
+  if (!msg) return;
+
+  // message format expected: { action: "...", data: {...} }
+  const action = msg.action || msg.type || null;
+  const data = msg.data || msg.payload || {};
+
+  if (!action) return;
+
+  // handle a few common actions from your Lua OSINT file
+  switch (action) {
+    case "UPDATE_TOGGLE_STATE":
+      // data: { toggleName, isToggled }
+      // Example: highlight UI item with same text as toggleName
+      {
+        const name = data.toggleName || data.name || "";
+        const toggled = !!data.isToggled;
+        const items = findMenuItems();
+        for (let i = 0; i < items.length; i++) {
+          const el = items[i];
+          const t = el.querySelector(".menu-item-text");
+          if (!t) continue;
+          if (t.textContent.trim().toLowerCase() === String(name).trim().toLowerCase()) {
+            if (toggled) el.classList.add("menu-item-selected");
+            else el.classList.remove("menu-item-selected");
+          }
         }
+      }
+      break;
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: transparent;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+    case "UPDATE_SERVER_LEFT_MODEL":
+      // data: { label, model }
+      updateServerLeftModel(data.label, data.model);
+      break;
+
+    case "GO_BACK_TO_MAIN":
+      // Example: clear sublabels and remove selection
+      setSelectedIndex(-1);
+      break;
+
+    case "UPDATE_SERVER_RIGHT_TOGGLE":
+      // data: { label, isToggled }
+      // We'll find a menu item with that label and toggle its class
+      {
+        const label = data.label || "";
+        const isToggled = !!data.isToggled;
+        const items = findMenuItems();
+        for (const el of items) {
+          const t = el.querySelector(".menu-item-text");
+          if (t && t.textContent.trim() === label) {
+            if (isToggled) el.classList.add("menu-item-selected");
+            else el.classList.remove("menu-item-selected");
+          }
         }
+      }
+      break;
 
-        .menu-container {
-            position: relative;
-            width: 371px;
-            height: 428px;
+    case "UPDATE_SERVER_TOGGLE_INDEX":
+      // data: { toggleName, isToggled } (server toggles)
+      // treat similarly to UPDATE_TOGGLE_STATE
+      {
+        const name = data.toggleName || data.toggle || "";
+        const isToggled = !!data.isToggled;
+        const items = findMenuItems();
+        for (const el of items) {
+          const t = el.querySelector(".menu-item-text");
+          if (t && t.textContent.trim() === name) {
+            if (isToggled) el.classList.add("menu-item-selected");
+            else el.classList.remove("menu-item-selected");
+          }
         }
+      }
+      break;
 
-        /* Header Image */
-        .menu-header {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 371px;
-            height: 101px;
-            border-radius: 6px 6px 0 0;
-            overflow: hidden;
-        }
+    case "SET_SERVER_OPTIONS_FOCUS":
+      // optional: data: { side, index }
+      // if index provided, highlight that index
+      if (typeof data.index === "number") setSelectedIndex(data.index);
+      break;
 
-        .menu-header img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: 50% 50%;
-        }
+    /* Add any more action handlers you need here. */
+    default:
+      // console.debug("Unhandled DUI message action:", action, data);
+      break;
+  }
+});
 
-        /* Main Menu Tab */
-        .main-menu-wrapper {
-            position: absolute;
-            left: 0;
-            top: 94px;
-            width: 371px;
-            height: 39px;
-        }
+/* ----- UI -> Lua: Hook clicks/toggles so user actions are sent back ----- */
+document.addEventListener("DOMContentLoaded", () => {
+  // click handler for menu items that sends their label as a 'SELECT' action
+  const items = findMenuItems();
+  items.forEach((el, idx) => {
+    el.addEventListener("click", () => {
+      const labelEl = el.querySelector(".menu-item-text");
+      const label = labelEl ? labelEl.textContent.trim() : `item_${idx}`;
+      // example message to Lua: action SELECT_MENU_ITEM
+      sendToLua("SELECT_MENU_ITEM", { label, index: idx });
+    });
+  });
 
-        .main-menu-bg {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 371px;
-            height: 39px;
-            background: #000000;
-            border-radius: 5px;
-        }
+  // keyboard example: arrow keys to send navigation events
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowUp") sendToLua("NAVIGATE", { dir: "up" });
+    if (e.key === "ArrowDown") sendToLua("NAVIGATE", { dir: "down" });
+    if (e.key === "Enter") sendToLua("ENTER", {});
+    if (e.key === "Escape") sendToLua("BACK", {});
+  });
+});
 
-        .main-menu-button {
-            position: absolute;
-            left: 0;
-            top: 7px;
-            width: 98px;
-            height: 32px;
-            background: linear-gradient(to top, #2282f5, #06131f 83.173%);
-            border-radius: 3px;
-            box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), inset 0px 1px 2px 0px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+/* ----- Debug helper exposed to console ----- */
+window._dui = {
+  sendToLua,
+  setSelectedIndex,
+  updateServerLeftModel,
+  parseMsg
+};
 
-        .main-menu-text {
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            font-size: 12px;
-            white-space: nowrap;
-            line-height: normal;
-        }
-
-        /* Menu List Background */
-        .menu-list-wrapper {
-            position: absolute;
-            left: 0;
-            top: 138px;
-            width: 371px;
-        }
-
-        .menu-list-header {
-            position: relative;
-            width: 371px;
-            height: 30px;
-            background: #000000;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 7px;
-        }
-
-        .page-indicator {
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            font-size: 12px;
-            white-space: nowrap;
-        }
-
-        .menu-list-content {
-            width: 371px;
-            background: rgba(217, 217, 217, 0);
-            border-radius: 0 0 6px 6px;
-            padding-top: 5px;
-        }
-
-        .menu-list-top-border {
-            width: 371px;
-            height: 5px;
-            background: #000000;
-        }
-
-        /* Menu Items */
-        .menu-items {
-            width: 371px;
-        }
-
-        .menu-item {
-            position: relative;
-            width: 371px;
-            height: 32px;
-            background: rgba(0, 0, 2, 0.5);
-            margin-bottom: 0;
-            display: flex;
-            align-items: center;
-            padding-left: 7px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .menu-item:hover {
-            background: rgba(46, 120, 210, 0.4);
-        }
-
-        .menu-item-selected {
-            background: rgba(46, 120, 210, 0.56);
-            border: 1px solid #207be8;
-        }
-
-        .menu-item-text {
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            font-size: 12px;
-            line-height: 15px;
-            margin: 0;
-        }
-
-        .menu-arrow {
-            position: absolute;
-            right: 11px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 8px;
-            height: 15px;
-        }
-
-        /* Footer */
-        .menu-footer {
-            position: absolute;
-            left: 0;
-            top: 392px;
-            width: 371px;
-            height: 36px;
-            background: #000000;
-            border-radius: 0 0 6px 6px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 7px;
-        }
-
-        .footer-version {
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            font-size: 12px;
-            margin: 0;
-        }
-
-        .footer-name {
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            font-size: 12px;
-            margin: 0;
-        }
-    </style>
-</head>
-<body>
-    <div class="menu-container">
-        <!-- Header Image with Cat -->
-        <div class="menu-header">
-            <img src="https://images.unsplash.com/photo-1647806422508-0322f33e270b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYXQlMjBwb3J0cmFpdHxlbnwxfHx8fDE3NjEzMDQzNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="Menu Header">
-        </div>
-
-        <!-- Main Menu Tab -->
-        <div class="main-menu-wrapper">
-            <div class="main-menu-bg"></div>
-            <div class="main-menu-button">
-                <p class="main-menu-text">Main Menu</p>
-            </div>
-        </div>
-
-        <!-- Menu List Container -->
-        <div class="menu-list-wrapper">
-            <div class="menu-list-header">
-                <p class="page-indicator">1/7</p>
-            </div>
-            <div class="menu-list-content">
-                <div class="menu-list-top-border"></div>
-                
-                <!-- Menu Items -->
-                <div class="menu-items">
-                    <!-- Self (Selected) -->
-                    <div class="menu-item menu-item-selected">
-                        <p class="menu-item-text">Self</p>
-                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
-                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
-                        </svg>
-                    </div>
-
-                    <!-- Online -->
-                    <div class="menu-item">
-                        <p class="menu-item-text">Online</p>
-                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
-                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
-                        </svg>
-                    </div>
-
-                    <!-- Weapon -->
-                    <div class="menu-item">
-                        <p class="menu-item-text">Weapon</p>
-                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
-                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
-                        </svg>
-                    </div>
-
-                    <!-- Vehicle -->
-                    <div class="menu-item">
-                        <p class="menu-item-text">Vehicle</p>
-                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
-                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
-                        </svg>
-                    </div>
-
-                    <!-- Teleportation -->
-                    <div class="menu-item">
-                        <p class="menu-item-text">Teleportation</p>
-                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
-                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
-                        </svg>
-                    </div>
-
-                    <!-- Miscellaneous -->
-                    <div class="menu-item">
-                        <p class="menu-item-text">Miscellaneous</p>
-                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
-                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
-                        </svg>
-                    </div>
-
-                    <!-- Settings -->
-                    <div class="menu-item">
-                        <p class="menu-item-text">Settings</p>
-                        <svg class="menu-arrow" viewBox="0 0 9 15" fill="none">
-                            <path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107ZM7.36386 7.36396V8.36396H7.36396V7.36396V6.36396H7.36386V7.36396Z" fill="white"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="menu-footer">
-            <p class="footer-version">Beta - 1.00</p>
-            <p class="footer-name">Name</p>
-        </div>
-    </div>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9941880bcbb00ceb',t:'MTc2MTM5MzM5NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-</html>
+log("DUI bridge initialized. RESOURCE_NAME =", RESOURCE_NAME);
+</script>
