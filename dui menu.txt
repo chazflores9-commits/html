@@ -1,0 +1,80 @@
+local dui = nil
+local isVisible = false
+local currentTab = "Main"
+local currentSelection = "Player"
+local activeMenu = {}
+local activeIndex = 1
+
+-- Create and show the menu
+function ReopenMenu()
+    if not dui then
+        dui = MachoCreateDui("https://yourresource/html/index.html") -- Replace with your actual path
+    end
+
+    MachoShowDui(dui)
+    isVisible = true
+
+    MachoSendDuiMessage(dui, json.encode({
+        action = "open",
+        tab = currentTab,
+        selection = currentSelection
+    }))
+
+    setCurrent()
+end
+
+-- Hide the menu
+function CloseMenu()
+    if dui then
+        MachoSendDuiMessage(dui, json.encode({ action = "close" }))
+        MachoHideDui(dui)
+        isVisible = false
+    end
+end
+
+-- Toggle with command
+RegisterCommand("macho", function()
+    if isVisible then
+        CloseMenu()
+    else
+        ReopenMenu()
+    end
+end)
+
+-- Handle messages from HTML
+RegisterCommand("macho_dui_message", function(_, raw)
+    local data = json.decode(raw)
+    if not data or not data.action then return end
+
+    if data.action == "switchTab" then
+        currentTab = data.tab
+        MachoSendDuiMessage(dui, json.encode({ action = "updateTab", tab = currentTab }))
+    elseif data.action == "selectItem" then
+        currentSelection = data.item
+        MachoSendDuiMessage(dui, json.encode({ action = "updateSelection", selection = currentSelection }))
+    elseif data.action == "submitInput" then
+        print("Input submitted:", data.value)
+        -- Handle input callback here
+    elseif data.action == "closeMenu" then
+        CloseMenu()
+    end
+end, true)
+
+-- Push current menu state to DUI
+function setCurrent()
+    if dui then
+        MachoSendDuiMessage(dui, json.encode({
+            action = "setCurrent",
+            current = activeIndex,
+            menu = {
+                { label = "Player", type = "button" },
+                { label = "Vehicle", type = "button" },
+                { label = "Weapons", type = "button" },
+                { label = "Resources", type = "button" },
+                { label = "World", type = "button" },
+                { label = "Server", type = "button" },
+                { label = "Menu Settings", type = "button" }
+            }
+        }))
+    end
+end
