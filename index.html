@@ -312,6 +312,9 @@
             console.log('Received message:', data);
 
             switch (data.action) {
+                case 'KEY_PRESSED':
+                    handleKeyPress(data.data.key);
+                    break;
                 case 'SET_OSINT_VISIBLE':
                     setMenuVisibility(data.data.bool);
                     break;
@@ -554,6 +557,115 @@
             });
 
             menuContent.innerHTML = html;
+        }
+
+        // Handle key presses
+        function handleKeyPress(key) {
+            console.log('Key pressed:', key);
+            
+            if (!menuState.visible) return;
+
+            switch (key) {
+                case 'UP':
+                    navigateUp();
+                    break;
+                case 'DOWN':
+                    navigateDown();
+                    break;
+                case 'LEFT':
+                    switchSectionLeft();
+                    break;
+                case 'RIGHT':
+                    switchSectionRight();
+                    break;
+                case 'ENTER':
+                    selectCurrent();
+                    break;
+                case 'ESCAPE':
+                case 'BACK':
+                    goBack();
+                    break;
+            }
+        }
+
+        // Navigation functions
+        function navigateUp() {
+            if (menuState.selectedIndex > 0) {
+                menuState.selectedIndex--;
+                renderContent();
+            }
+        }
+
+        function navigateDown() {
+            const maxIndex = getMaxIndex();
+            if (menuState.selectedIndex < maxIndex) {
+                menuState.selectedIndex++;
+                renderContent();
+            }
+        }
+
+        function switchSectionLeft() {
+            const sections = ['toggles', 'players', 'server'];
+            const currentIdx = sections.indexOf(menuState.section);
+            if (currentIdx > 0) {
+                switchSection(sections[currentIdx - 1]);
+            }
+        }
+
+        function switchSectionRight() {
+            const sections = ['toggles', 'players', 'server'];
+            const currentIdx = sections.indexOf(menuState.section);
+            if (currentIdx < sections.length - 1) {
+                switchSection(sections[currentIdx + 1]);
+            }
+        }
+
+        function selectCurrent() {
+            if (menuState.section === 'toggles') {
+                const toggles = [
+                    'Revive', 'Unfreeze', 'Noclip', 'Fast Run', 
+                    'Skeleton', 'Freecam', 'Godmode', 'Player IDs',
+                    'No Ragdoll', 'SuperJump', 'Max Stamina', 'Invisibility'
+                ];
+                const toggleName = toggles[menuState.selectedIndex];
+                if (toggleName) {
+                    menuState.toggleStates[toggleName] = !menuState.toggleStates[toggleName];
+                    renderContent();
+                }
+            } else if (menuState.section === 'players') {
+                // Handle player selection
+                const player = menuState.playerList[menuState.selectedIndex];
+                if (player) {
+                    console.log('Selected player:', player);
+                }
+            } else if (menuState.section === 'server') {
+                const serverToggles = [
+                    'Kill Every1', 'Explode All Cars', 'EarRape Every1',
+                    'Tug Spammer', 'Trash Spammer', 'Freecam'
+                ];
+                const toggleName = serverToggles[menuState.selectedIndex];
+                if (toggleName) {
+                    menuState.serverToggleStates[toggleName] = !menuState.serverToggleStates[toggleName];
+                    renderContent();
+                }
+            }
+        }
+
+        function goBack() {
+            // Handle back navigation
+            switchSection('toggles');
+            menuState.selectedIndex = 0;
+        }
+
+        function getMaxIndex() {
+            if (menuState.section === 'toggles') {
+                return 11; // 12 toggles (0-11)
+            } else if (menuState.section === 'players') {
+                return Math.max(0, menuState.playerList.length - 1);
+            } else if (menuState.section === 'server') {
+                return 5; // 6 server toggles (0-5)
+            }
+            return 0;
         }
 
         // Initialize
