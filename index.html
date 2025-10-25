@@ -5,12 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FiveM Menu</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
             background: transparent;
@@ -19,194 +14,31 @@
             align-items: center;
             min-height: 100vh;
         }
-
-        .menu-container {
-            position: relative;
-            width: 371px;
-            height: 428px;
-        }
-
-        /* Header Image */
-        .menu-header {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 371px;
-            height: 101px;
-            border-radius: 6px 6px 0 0;
-            overflow: hidden;
-        }
-
-        .menu-header img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: 50% 50%;
-        }
-
-        /* Main Menu Tab */
-        .main-menu-wrapper {
-            position: absolute;
-            left: 0;
-            top: 94px;
-            width: 371px;
-            height: 39px;
-        }
-
-        .main-menu-bg {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 371px;
-            height: 39px;
-            background: #000000;
-            border-radius: 5px;
-        }
-
-        .main-menu-button {
-            position: absolute;
-            left: 0;
-            top: 7px;
-            width: 98px;
-            height: 32px;
-            background: linear-gradient(to top, #2282f5, #06131f 83.173%);
-            border-radius: 3px;
-            box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), inset 0px 1px 2px 0px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .main-menu-text {
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            font-size: 12px;
-            white-space: nowrap;
-            line-height: normal;
-        }
-
-        /* Menu List Background */
-        .menu-list-wrapper {
-            position: absolute;
-            left: 0;
-            top: 138px;
-            width: 371px;
-        }
-
-        .menu-list-header {
-            position: relative;
-            width: 371px;
-            height: 30px;
-            background: #000000;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 7px;
-        }
-
-        .page-indicator {
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            font-size: 12px;
-            white-space: nowrap;
-        }
-
-        .menu-list-content {
-            width: 371px;
-            background: rgba(217, 217, 217, 0);
-            border-radius: 0 0 6px 6px;
-            padding-top: 5px;
-        }
-
-        .menu-list-top-border {
-            width: 371px;
-            height: 5px;
-            background: #000000;
-        }
-
-        /* Menu Items */
-        .menu-items {
-            width: 371px;
-        }
-
-        .menu-item {
-            position: relative;
-            width: 371px;
-            height: 32px;
-            background: rgba(0, 0, 2, 0.5);
-            margin-bottom: 0;
-            display: flex;
-            align-items: center;
-            padding-left: 7px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .menu-item:hover {
-            background: rgba(46, 120, 210, 0.4);
-        }
-
-        .menu-item-selected {
-            background: rgba(46, 120, 210, 0.56);
-            border: 1px solid #207be8;
-        }
-
-        .menu-item-text {
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            font-size: 12px;
-            line-height: 15px;
-            margin: 0;
-        }
-
-        .menu-arrow {
-            position: absolute;
-            right: 11px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 8px;
-            height: 15px;
-        }
-
-        /* Footer */
-        .menu-footer {
-            position: absolute;
-            left: 0;
-            top: 392px;
-            width: 371px;
-            height: 36px;
-            background: #000000;
-            border-radius: 0 0 6px 6px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 7px;
-        }
-
-        .footer-version {
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            font-size: 12px;
-            margin: 0;
-        }
-
-        .footer-name {
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            font-size: 12px;
-            margin: 0;
-        }
+        .menu-container { position: relative; width: 371px; height: 428px; }
+        .menu-header { position: absolute; left: 0; top: 0; width: 371px; height: 101px; border-radius: 6px 6px 0 0; overflow: hidden; }
+        .menu-header img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
+        .main-menu-wrapper { position: absolute; left: 0; top: 94px; width: 371px; height: 39px; }
+        .main-menu-bg { position: absolute; left: 0; top: 0; width: 371px; height: 39px; background: #000000; border-radius: 5px; }
+        .main-menu-button { position: absolute; left: 0; top: 7px; width: 98px; height: 32px; background: linear-gradient(to top, #2282f5, #06131f 83.173%); border-radius: 3px; box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.2), inset 0px 1px 2px 0px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; }
+        .main-menu-text { color: white; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 12px; white-space: nowrap; line-height: normal; }
+        .menu-list-wrapper { position: absolute; left: 0; top: 138px; width: 371px; }
+        .menu-list-header { position: relative; width: 371px; height: 30px; background: #000000; border-radius: 5px; display: flex; align-items: center; justify-content: flex-end; padding-right: 7px; }
+        .page-indicator { color: white; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 12px; white-space: nowrap; }
+        .menu-list-content { width: 371px; background: rgba(217,217,217,0); border-radius: 0 0 6px 6px; padding-top: 5px; }
+        .menu-list-top-border { width: 371px; height: 5px; background: #000000; }
+        .menu-items { width: 371px; }
+        .menu-item { position: relative; width: 371px; height: 32px; background: rgba(0,0,2,0.5); margin-bottom: 0; display: flex; align-items: center; padding-left: 7px; cursor: pointer; transition: background 0.2s; }
+        .menu-item:hover { background: rgba(46,120,210,0.4); }
+        .menu-item-selected { background: rgba(46,120,210,0.56); border: 1px solid #207be8; }
+        .menu-item-text { color: white; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 12px; line-height: 15px; margin: 0; }
+        .menu-arrow { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); width: 8px; height: 15px; }
+        .menu-footer { position: absolute; left: 0; top: 392px; width: 371px; height: 36px; background: #000000; border-radius: 0 0 6px 6px; display: flex; align-items: center; justify-content: space-between; padding: 0 7px; }
+        .footer-version, .footer-name { color: white; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 12px; margin: 0; }
     </style>
 </head>
 <body>
     <div class="menu-container">
-        <!-- Header Image with Cat -->
+        <!-- Header Image -->
         <div class="menu-header">
             <img src="https://images.unsplash.com/photo-1647806422508-0322f33e270b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYXQlMjBwb3J0cmFpdHxlbnwxfHx8fDE3NjEzMDQzNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="Menu Header">
         </div>
@@ -219,15 +51,13 @@
             </div>
         </div>
 
-        <!-- Menu List Container -->
+        <!-- Menu List -->
         <div class="menu-list-wrapper">
             <div class="menu-list-header">
                 <p class="page-indicator">1/7</p>
             </div>
             <div class="menu-list-content">
                 <div class="menu-list-top-border"></div>
-                
-                <!-- Menu Items -->
                 <div class="menu-items">
                     <div class="menu-item menu-item-selected"><p class="menu-item-text">Self</p></div>
                     <div class="menu-item"><p class="menu-item-text">Online</p></div>
@@ -247,49 +77,61 @@
         </div>
     </div>
 
-    <!-- Arrow Key Navigation Script -->
+    <!-- Navigation Script -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const menuItems = document.querySelectorAll('.menu-item');
-            let selectedIndex = 0;
+        const menuItems = document.querySelectorAll('.menu-item');
+        const pageIndicator = document.querySelector('.page-indicator');
+        const totalPages = 7;
+        let selectedIndex = 0;
+        let currentPage = 1;
 
-            function updateSelection(index) {
-                menuItems.forEach((item, i) => {
-                    if (i === index) {
-                        item.classList.add('menu-item-selected');
-                        item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-                    } else {
-                        item.classList.remove('menu-item-selected');
-                    }
-                });
-            }
-
-            updateSelection(selectedIndex);
-
-            document.addEventListener('keydown', (e) => {
-                switch(e.key) {
-                    case 'ArrowDown':
-                        selectedIndex = (selectedIndex + 1) % menuItems.length;
-                        updateSelection(selectedIndex);
-                        break;
-                    case 'ArrowUp':
-                        selectedIndex = (selectedIndex - 1 + menuItems.length) % menuItems.length;
-                        updateSelection(selectedIndex);
-                        break;
-                    case 'Enter':
-                        const selectedItem = menuItems[selectedIndex];
-                        alert(`Selected: ${selectedItem.querySelector('.menu-item-text').textContent}`);
-                        break;
-                }
-            });
-
+        function updateSelection(index) {
             menuItems.forEach((item, i) => {
-                item.addEventListener('click', () => {
-                    selectedIndex = i;
+                item.classList.toggle('menu-item-selected', i === index);
+                if (i === index) item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            });
+        }
+
+        function updatePage(direction) {
+            if (direction === 'next') currentPage = currentPage < totalPages ? currentPage + 1 : 1;
+            if (direction === 'prev') currentPage = currentPage > 1 ? currentPage - 1 : totalPages;
+            pageIndicator.textContent = `${currentPage}/${totalPages}`;
+            console.log('Page changed to', currentPage);
+            // TODO: update visible menu items for the current page
+        }
+
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowDown':
+                    selectedIndex = (selectedIndex + 1) % menuItems.length;
                     updateSelection(selectedIndex);
-                });
+                    break;
+                case 'ArrowUp':
+                    selectedIndex = (selectedIndex - 1 + menuItems.length) % menuItems.length;
+                    updateSelection(selectedIndex);
+                    break;
+                case 'ArrowRight':
+                    updatePage('next');
+                    break;
+                case 'ArrowLeft':
+                    updatePage('prev');
+                    break;
+                case 'Enter':
+                    menuItems[selectedIndex].click();
+                    break;
+            }
+        });
+
+        menuItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                selectedIndex = index;
+                updateSelection(selectedIndex);
+                console.log('Selected:', item.querySelector('.menu-item-text').textContent);
             });
         });
+
+        // Initialize selection
+        updateSelection(selectedIndex);
     </script>
 </body>
 </html>
