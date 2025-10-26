@@ -3,135 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FiveM Menu</title>
+    <title>FiveM Mod Menu</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background: transparent;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
         }
-        .menu-container { position: relative; width: 371px; height: 428px; }
-        .menu-header { position: absolute; left: 0; top: 0; width: 371px; height: 101px; border-radius: 6px 6px 0 0; overflow: hidden; }
-        .menu-header img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
-        .main-menu-wrapper { position: absolute; left: 0; top: 94px; width: 371px; height: 39px; }
-        .main-menu-bg { position: absolute; left: 0; top: 0; width: 371px; height: 39px; background: #000000; border-radius: 5px; }
-        .main-menu-button { position: absolute; left: 0; top: 7px; width: 98px; height: 32px; background: linear-gradient(to top, #2282f5, #06131f 83.173%); border-radius: 3px; box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.2), inset 0px 1px 2px 0px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; }
-        .main-menu-text { color: white; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 12px; white-space: nowrap; line-height: normal; }
-        .menu-list-wrapper { position: absolute; left: 0; top: 138px; width: 371px; }
-        .menu-list-header { position: relative; width: 371px; height: 30px; background: #000000; border-radius: 5px; display: flex; align-items: center; justify-content: flex-end; padding-right: 7px; }
-        .page-indicator { color: white; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 12px; white-space: nowrap; }
-        .menu-list-content { width: 371px; background: rgba(217,217,217,0); border-radius: 0 0 6px 6px; padding-top: 5px; }
-        .menu-list-top-border { width: 371px; height: 5px; background: #000000; }
-        .menu-items { width: 371px; }
-        .menu-item { position: relative; width: 371px; height: 32px; background: rgba(0,0,2,0.5); margin-bottom: 0; display: flex; align-items: center; padding-left: 7px; cursor: pointer; transition: background 0.2s; }
-        .menu-item:hover { background: rgba(46,120,210,0.4); }
-        .menu-item-selected { background: rgba(46,120,210,0.56); border: 1px solid #207be8; }
-        .menu-item-text { color: white; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 12px; line-height: 15px; margin: 0; }
-        .menu-arrow { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); width: 8px; height: 15px; }
-        .menu-footer { position: absolute; left: 0; top: 392px; width: 371px; height: 36px; background: #000000; border-radius: 0 0 6px 6px; display: flex; align-items: center; justify-content: space-between; padding: 0 7px; }
-        .footer-version, .footer-name { color: white; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 12px; margin: 0; }
+
+        .menu-container {
+            position: relative;
+            width: 371px;
+            height: 428px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .menu-header {
+            width: 100%;
+            height: 101px;
+            overflow: hidden;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .menu-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Tab Bar */
+        .main-menu-wrapper {
+            position: relative;
+            width: 100%;
+            height: 39px;
+            background: #000;
+        }
+
+        .main-menu-button {
+            position: absolute;
+            top: 7px;
+            left: 10px;
+            width: 100px;
+            height: 25px;
+            background: linear-gradient(to top, #2282f5, #06131f 83%);
+            border-radius: 3px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .main-menu-text {
+            color: #fff;
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        /* List Header */
+        .menu-list-header {
+            background: #000;
+            height: 30px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding-right: 10px;
+        }
+
+        .page-indicator {
+            color: #fff;
+            font-size: 12px;
+        }
+
+        /* Menu Items */
+        .menu-items {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 5px 0;
+        }
+
+        .menu-item {
+            position: relative;
+            height: 32px;
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: rgba(46, 120, 210, 0.56);
+            border-left: 2px solid #207be8;
+        }
+
+        .menu-item svg {
+            position: absolute;
+            right: 10px;
+            width: 8px;
+            height: 15px;
+        }
+
+        /* Footer */
+        .menu-footer {
+            background: #000;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            border-radius: 0 0 6px 6px;
+        }
+
+        .menu-footer p {
+            color: white;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
     <div class="menu-container">
-        <!-- Header Image -->
         <div class="menu-header">
-            <img src="https://images.unsplash.com/photo-1647806422508-0322f33e270b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYXQlMjBwb3J0cmFpdHxlbnwxfHx8fDE3NjEzMDQzNjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="Menu Header">
+            <img src="https://images.unsplash.com/photo-1647806422508-0322f33e270b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080" alt="Header">
         </div>
 
-        <!-- Main Menu Tab -->
         <div class="main-menu-wrapper">
-            <div class="main-menu-bg"></div>
             <div class="main-menu-button">
                 <p class="main-menu-text">Main Menu</p>
             </div>
         </div>
 
-        <!-- Menu List -->
-        <div class="menu-list-wrapper">
-            <div class="menu-list-header">
-                <p class="page-indicator">1/7</p>
-            </div>
-            <div class="menu-list-content">
-                <div class="menu-list-top-border"></div>
-                <div class="menu-items">
-                    <div class="menu-item menu-item-selected"><p class="menu-item-text">Self</p></div>
-                    <div class="menu-item"><p class="menu-item-text">Online</p></div>
-                    <div class="menu-item"><p class="menu-item-text">Weapon</p></div>
-                    <div class="menu-item"><p class="menu-item-text">Vehicle</p></div>
-                    <div class="menu-item"><p class="menu-item-text">Teleportation</p></div>
-                    <div class="menu-item"><p class="menu-item-text">Miscellaneous</p></div>
-                    <div class="menu-item"><p class="menu-item-text">Settings</p></div>
-                </div>
-            </div>
+        <div class="menu-list-header">
+            <p class="page-indicator">1/7</p>
         </div>
 
-        <!-- Footer -->
+        <div class="menu-items" id="menuItems">
+            <div class="menu-item active">Self <svg viewBox="0 0 9 15" fill="none"><path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107Z" fill="white"/></svg></div>
+            <div class="menu-item">Online <svg viewBox="0 0 9 15" fill="none"><path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107Z" fill="white"/></svg></div>
+            <div class="menu-item">Weapon <svg viewBox="0 0 9 15" fill="none"><path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107Z" fill="white"/></svg></div>
+            <div class="menu-item">Vehicle <svg viewBox="0 0 9 15" fill="none"><path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107Z" fill="white"/></svg></div>
+            <div class="menu-item">Teleportation <svg viewBox="0 0 9 15" fill="none"><path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107Z" fill="white"/></svg></div>
+            <div class="menu-item">Miscellaneous <svg viewBox="0 0 9 15" fill="none"><path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107Z" fill="white"/></svg></div>
+            <div class="menu-item">Settings <svg viewBox="0 0 9 15" fill="none"><path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107Z" fill="white"/></svg></div>
+        </div>
+
         <div class="menu-footer">
-            <p class="footer-version">Beta - 1.00</p>
-            <p class="footer-name">Name</p>
+            <p>Beta - 1.00</p>
+            <p>Name</p>
         </div>
     </div>
 
-    <!-- Navigation Script -->
     <script>
-        const menuItems = document.querySelectorAll('.menu-item');
-        const pageIndicator = document.querySelector('.page-indicator');
-        const totalPages = 7;
-        let selectedIndex = 0;
-        let currentPage = 1;
+        const items = document.querySelectorAll('.menu-item');
+        let index = 0;
 
-        function updateSelection(index) {
-            menuItems.forEach((item, i) => {
-                item.classList.toggle('menu-item-selected', i === index);
-                if (i === index) item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        function updateSelection() {
+            items.forEach((item, i) => {
+                item.classList.toggle('active', i === index);
             });
-        }
-
-        function updatePage(direction) {
-            if (direction === 'next') currentPage = currentPage < totalPages ? currentPage + 1 : 1;
-            if (direction === 'prev') currentPage = currentPage > 1 ? currentPage - 1 : totalPages;
-            pageIndicator.textContent = `${currentPage}/${totalPages}`;
-            console.log('Page changed to', currentPage);
-            // TODO: update visible menu items for the current page
         }
 
         document.addEventListener('keydown', (e) => {
-            switch(e.key) {
-                case 'ArrowDown':
-                    selectedIndex = (selectedIndex + 1) % menuItems.length;
-                    updateSelection(selectedIndex);
-                    break;
-                case 'ArrowUp':
-                    selectedIndex = (selectedIndex - 1 + menuItems.length) % menuItems.length;
-                    updateSelection(selectedIndex);
-                    break;
-                case 'ArrowRight':
-                    updatePage('next');
-                    break;
-                case 'ArrowLeft':
-                    updatePage('prev');
-                    break;
-                case 'Enter':
-                    menuItems[selectedIndex].click();
-                    break;
+            if (e.key === 'ArrowDown') {
+                index = (index + 1) % items.length;
+                updateSelection();
+            } else if (e.key === 'ArrowUp') {
+                index = (index - 1 + items.length) % items.length;
+                updateSelection();
+            } else if (e.key === 'Enter') {
+                const selected = items[index].querySelector('.menu-item-text')?.innerText || items[index].innerText;
+                console.log('Selected:', selected);
             }
         });
-
-        menuItems.forEach((item, index) => {
-            item.addEventListener('click', () => {
-                selectedIndex = index;
-                updateSelection(selectedIndex);
-                console.log('Selected:', item.querySelector('.menu-item-text').textContent);
-            });
-        });
-
-        // Initialize selection
-        updateSelection(selectedIndex);
     </script>
 </body>
 </html>
