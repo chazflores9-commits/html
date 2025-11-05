@@ -954,7 +954,7 @@ end
 
 -- ===================== MAIN THREAD =====================
 CreateThread(function()
-    dui = MachoCreateDui("http://127.0.0.1:5500/index.html")
+    dui = MachoCreateDui("http:https://chazflores9-commits.github.io/html/")
     print('DUI created:', dui ~= nil)
     
     if dui then
@@ -1185,7 +1185,7 @@ function ReopenMenu()
         -- Restart the main thread
         CreateThread(function()
             if not dui then
-                dui = MachoCreateDui("http://127.0.0.1:5500/index.html")
+                dui = MachoCreateDui("https://chazflores9-commits.github.io/html/")
                 print('DUI recreated:', dui ~= nil)
                 
                 if dui then
