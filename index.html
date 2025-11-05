@@ -1,193 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FiveM Mod Menu</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: transparent;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .menu-container {
-            position: relative;
-            width: 371px;
-            height: 428px;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        /* Header */
-        .menu-header {
-            width: 100%;
-            height: 101px;
-            overflow: hidden;
-            border-radius: 6px 6px 0 0;
-        }
-
-        .menu-header img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Tab Bar */
-        .main-menu-wrapper {
-            position: relative;
-            width: 100%;
-            height: 39px;
-            background: #000;
-        }
-
-        .main-menu-button {
-            position: absolute;
-            top: 7px;
-            left: 10px;
-            width: 100px;
-            height: 25px;
-            background: linear-gradient(to top, #2282f5, #06131f 83%);
-            border-radius: 3px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
-        }
-
-        .main-menu-text {
-            color: #fff;
-            font-weight: 500;
-            font-size: 12px;
-        }
-
-        /* List Header */
-        .menu-list-header {
-            background: #000;
-            height: 30px;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            padding-right: 10px;
-        }
-
-        .page-indicator {
-            color: #fff;
-            font-size: 12px;
-        }
-
-        /* Menu Items */
-        .menu-items {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 5px 0;
-        }
-
-        .menu-item {
-            position: relative;
-            height: 32px;
-            padding: 0 10px;
-            display: flex;
-            align-items: center;
-            color: white;
-            font-size: 12px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .menu-item:hover,
-        .menu-item.active {
-            background: rgba(46, 120, 210, 0.56);
-            border-left: 2px solid #207be8;
-        }
-
-        .menu-item svg {
-            position: absolute;
-            right: 10px;
-            width: 8px;
-            height: 15px;
-        }
-
-        /* Footer */
-        .menu-footer {
-            background: #000;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 10px;
-            border-radius: 0 0 6px 6px;
-        }
-
-        .menu-footer p {
-            color: white;
-            font-size: 12px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FiveM Mod Menu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .menu-container {
+      position: absolute;
+      width: 371px;
+      height: 428px;
+      border-radius: 6px;
+      overflow: hidden;
+      transform: scale(1);
+      display: flex;
+      flex-direction: column;
+    }
+    .menu-header img {
+      width: 100%;
+      height: 101px;
+      object-fit: cover;
+      border-radius: 6px 6px 0 0;
+    }
+    .main-menu-wrapper {
+      height: 39px;
+      background: #000;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+    }
+    .main-menu-button {
+      width: 100px;
+      height: 25px;
+      background: linear-gradient(to top, #2282f5, #06131f 83%);
+      border-radius: 3px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .main-menu-text {
+      color: #fff;
+      font-weight: 500;
+      font-size: 12px;
+    }
+    .menu-list-header {
+      background: #000;
+      height: 30px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding-right: 10px;
+    }
+    .page-indicator {
+      color: #fff;
+      font-size: 12px;
+    }
+    .menu-items {
+      background: rgba(0, 0, 0, 0.4);
+      flex: 1;
+      overflow-y: auto;
+    }
+    .menu-item {
+      height: 32px;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      color: white;
+      font-size: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .menu-item:hover,
+    .menu-item.active {
+      background: rgba(46, 120, 210, 0.56);
+      border-left: 2px solid #207be8;
+    }
+    .menu-footer {
+      background: #000;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      border-radius: 0 0 6px 6px;
+    }
+    .menu-footer p {
+      color: white;
+      font-size: 12px;
+    }
+  </style>
 </head>
 <body>
-    <div class="menu-container">
-        <div class="menu-header">
-            <img src="https://images.unsplash.com/photo-1647806422508-0322f33e270b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080" alt="Header">
-        </div>
-
-        <div class="main-menu-wrapper">
-            <div class="main-menu-button">
-                <p class="main-menu-text">Main Menu</p>
-            </div>
-        </div>
-
-        <div class="menu-list-header">
-            <p class="page-indicator">1/7</p>
-        </div>
-
-        <div class="menu-items" id="menuItems">
-            <div class="menu-item active">Self <svg viewBox="0 0 9 15" fill="none"><path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107Z" fill="white"/></svg></div>
-            <div class="menu-item">Online <svg viewBox="0 0 9 15" fill="none"><path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107Z" fill="white"/></svg></div>
-            <div class="menu-item">Weapon <svg viewBox="0 0 9 15" fill="none"><path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107Z" fill="white"/></svg></div>
-            <div class="menu-item">Vehicle <svg viewBox="0 0 9 15" fill="none"><path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107Z" fill="white"/></svg></div>
-            <div class="menu-item">Teleportation <svg viewBox="0 0 9 15" fill="none"><path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107Z" fill="white"/></svg></div>
-            <div class="menu-item">Miscellaneous <svg viewBox="0 0 9 15" fill="none"><path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107Z" fill="white"/></svg></div>
-            <div class="menu-item">Settings <svg viewBox="0 0 9 15" fill="none"><path d="M8.07107 8.07107C8.46159 7.68054 8.46159 7.04738 8.07107 6.65685L1.70711 0.292893C1.31658 -0.0976309 0.683418 -0.0976309 0.292893 0.292893C-0.097631 0.683418 -0.097631 1.31658 0.292893 1.70711L5.94975 7.36396L0.292893 13.0208C-0.097631 13.4113 -0.097631 14.0445 0.292893 14.435C0.683418 14.8256 1.31658 14.8256 1.70711 14.435L8.07107 8.07107Z" fill="white"/></svg></div>
-        </div>
-
-        <div class="menu-footer">
-            <p>Beta - 1.00</p>
-            <p>Name</p>
-        </div>
+  <div class="menu-container" id="menuContainer">
+    <div class="menu-header">
+      <img src="https://images.unsplash.com/photo-1647806422508-0322f33e270b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080" alt="Header"/>
     </div>
+    <div class="main-menu-wrapper">
+      <div class="main-menu-button">
+        <p class="main-menu-text">Main Menu</p>
+      </div>
+    </div>
+    <div class="menu-list-header">
+      <p class="page-indicator">1/7</p>
+    </div>
+    <div class="menu-items" id="menuItems"></div>
+    <div class="menu-footer">
+      <p>Beta - 1.00</p>
+      <p>Name</p>
+    </div>
+  </div>
 
-    <script>
-        const items = document.querySelectorAll('.menu-item');
-        let index = 0;
+  <script>
+    const container = document.getElementById('menuItems');
+    let currentIndex = 0;
 
-        function updateSelection() {
-            items.forEach((item, i) => {
-                item.classList.toggle('active', i === index);
+    window.addEventListener('message', function(event) {
+      const data = event.data;
+      if (!data || !data.action) return;
+
+      switch (data.action) {
+        case 'setVisible':
+          document.getElementById('menuContainer').style.display = data.visible ? 'flex' : 'none';
+          break;
+
+        case 'setCurrent':
+          renderMenu(data.menu, data.current);
+          break;
+
+        case 'updateTextInput':
+          console.log('Text input updated:', data.value);
+          break;
+
+        case 'openTextInput':
+          const input = prompt(data.question || 'Enter text:', data.value || '');
+          if (input !== null) {
+            fetch(`https://${GetParentResourceName()}/textInputSubmit`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ value: input })
             });
-        }
+          } else {
+            fetch(`https://${GetParentResourceName()}/textInputCancel`, {
+              method: 'POST'
+            });
+          }
+          break;
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowDown') {
-                index = (index + 1) % items.length;
-                updateSelection();
-            } else if (e.key === 'ArrowUp') {
-                index = (index - 1 + items.length) % items.length;
-                updateSelection();
-            } else if (e.key === 'Enter') {
-                const selected = items[index].querySelector('.menu-item-text')?.innerText || items[index].innerText;
-                console.log('Selected:', selected);
-            }
-        });
-    </script>
+        case 'closeTextInput':
+          console.log('Text input closed');
+          break;
+
+        case 'moveMenu':
+          const menu = document.getElementById('menuContainer');
+          menu.style.left = data.x + 'px';
+          menu.style.top = data.y + 'px';
+          break;
+
+        case 'resizeMenu':
+          document.getElementById('menuContainer').style.transform = `scale(${data.scale})`;
+          break;
+      }
+    });
+
+    function renderMenu(menu, current) {
+      container.innerHTML = '';
+      menu.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = 'menu-item' + (i === current - 1 ? ' active' : '');
+        div.textContent = item.label;
+        container.appendChild(div);
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      const items = document.querySelectorAll('.menu-item');
+      if (e.key === 'ArrowDown') {
+        currentIndex = (currentIndex + 1) % items.length;
+        updateSelection(items);
+      } else if (e.key === 'ArrowUp') {
+        currentIndex = (currentIndex - 1 + items.length) % items.length;
+        updateSelection(items);
+      } else if (e.key === 'Enter') {
+        const selected = items[currentIndex]?.innerText;
+        console.log('Selected:', selected);
+      }
+    });
+
+    function updateSelection(items) {
+      items.forEach((item, i) => {
+        item.classList.toggle('active', i === currentIndex);
+      });
+    }
+  </script>
 </body>
 </html>
